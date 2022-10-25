@@ -4,23 +4,15 @@ import pandas as pd
 import pandas_datareader as web
 
 
-
-# end_date = dt.date.today()
-# start_date = dt.date(end_date.year - 1, end_date.month, end_date.day)
-
 tickers = ["ABB", "AAPL", "BLK", "DFS", "EOG", "HD", "JPM", "KGC", "MBUU", "MCD", "MDT", "MSFT", "NVDA", "PTC", "REGN", "SE", "SRE", "SOFI", "UNH", "VLD"]
 
-df = web.DataReader(tickers, "yahoo", '2022-01-01', '2022-10-08')['Close']
-df.to_csv("holdings_data.csv")
+df = web.DataReader(tickers, "yahoo", '2022-01-01', dt.date.today())['Close']
+
+# df["Cash"]
+# df["Holdings"]
+
+df["FundValue"]= (df["ABB"]*258)+ df["AAPL"]*50+df["BLK"]*20+df["DFS"]*42+df["EOG"]*66+df["HD"]*25+df["JPM"]*56+df["KGC"]*1340+df["MBUU"]*116+df["MCD"]*94+df["MDT"]*46+df["MSFT"]*209+df["NVDA"]*40+df["PTC"]*79+df["REGN"]*6+df["SE"]*38+df["SRE"]*43+df["SOFI"]*600+df["UNH"]*14+df["VLD"]*1250+82831.83
+df["FundValue"].to_csv("holdings_data.csv")
 
 
 
-# import datetime as dt
-# import pandas_datareader as web
-
-# end_date = dt.date.today()
-# start_date = dt.date(end_date.year - 50, end_date.month, end_date.day)
-
-# tickers = ["DGS3MO", "DGS2", "DGS10", "T10Y2Y"]
-# df = web.DataReader(tickers, "fred", start_date, end_date).dropna()
-# df.to_csv("yield_curve_data.csv")
