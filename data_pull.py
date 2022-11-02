@@ -1,18 +1,27 @@
-import datetime as dt
 import pandas as pd
+import gspread as gs
+import datetime as dt
+import pandas_datareader as web
 
 import pandas_datareader as web
 
+gc = gs.service_account(filename='testdashboard1-be5a120e4282.json')
+sheet1 = gc.open("LITGTransaction")
 
-tickers = ["ABB", "AAPL", "BLK", "DFS", "EOG", "HD", "JPM", "KGC", "MBUU", "MCD", "MDT", "MSFT", "NVDA", "PTC", "REGN", "SE", "SRE", "SOFI", "UNH", "VLD"]
+ws = sheet1.worksheet('LITGTrans')
+df = pd.DataFrame(ws.get_all_records())
 
-df = web.DataReader(tickers, "yahoo", '2022-04-25', dt.date.today())['Close']
 
-df["Cash"] = 156054.73
-df["Holdings"] = (df["ABB"]*258)+ df["AAPL"]*50+df["BLK"]*20+df["DFS"]*42+df["EOG"]*66+df["HD"]*25+df["JPM"]*56+df["KGC"]*1340+df["MBUU"]*116+df["MCD"]*94+df["MDT"]*46+df["MSFT"]*209+df["NVDA"]*40+df["PTC"]*79+df["REGN"]*6+df["SE"]*38+df["SRE"]*43+df["SOFI"]*600+df["UNH"]*14+df["VLD"]*1250
+dat = pd.DataFrame()
 
-df["FundValue"]= df["Cash"]+df["Holdings"]
-df["FundValue"].to_csv("holdings_data.csv")
+for n in df.iloc:
+    dat[n.ticker] = web.DataReader(n.ticker, "yahoo", n.date, dt.date.today())['Close']*n.quantity
+
+dat['Sum'] = dat[list(dat.columns)].sum(axis=1) 
+dat['Cash'] = 156054.73
+dat["FundValue"] = dat['Sum']+dat['Cash']
+
+dat["FundValue"].to_csv("holdings_data.csv")
 
 
 
