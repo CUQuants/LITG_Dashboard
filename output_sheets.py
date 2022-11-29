@@ -18,3 +18,14 @@ sc = pd.read_csv("sectors.csv")
 
 ws = sheet.worksheet("PChart")
 set_with_dataframe(ws, sc)
+
+##FOR TMT SECTOR
+tmt = pd.read_csv("tmt_holdings_data.csv")
+
+workshee = sheet.worksheet("TMTFundVal")
+set_with_dataframe(workshee, tmt)
+
+tmtsc = pd.read_csv("tmt_pie.csv")
+
+tsc = sheet.worksheet("TMTPieChart")
+set_with_dataframe(tsc, tmtsc)

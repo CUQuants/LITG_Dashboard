@@ -51,7 +51,7 @@ for n in tickers:
 fund_df.index = pd.date_range(start=f_date, end=e_date)
 
 cash_value = np.zeros(num_days)
-initial_cash = 156054.73
+initial_cash = 300000
 cash_value[0] = initial_cash
 
 for n in sorted_df.iloc:
@@ -93,6 +93,7 @@ sectors['ConsumerSum'] = fund_df[consumer_tickers].sum(axis=1)
 
 sectors.iloc[-1:].to_csv("sectors.csv")
 
+
 # Problem, dt includes weekends
 
 # make note to make sure lambda function doesn't run on weekends
@@ -131,3 +132,170 @@ tmt_fund_df['TMT_Fund_Value']=tmt_fund_df[list(tmt_fund_df.columns)].sum(axis=1)
 tmt_fund_df['TMT_Fund_Value'].to_csv("tmt_holdings_data.csv")
 
 tmt_fund_df.iloc[-1:,:-1].to_csv("tmt_pie.csv")
+
+#### Industrials SECTOR #####
+ind_date = np.min(industrials_df.date) # initial date
+inde_date = dt.now()
+indnum_days = (inde_date - ind_date).days + 1
+ind_price_data = web.DataReader(industrials_tickers, "yahoo", ind_date, dt.now())['Close']
+ind_fund_df = pd.DataFrame()
+
+for n in industrials_tickers:
+    ticker_holdings = np.zeros(indnum_days)
+    for q in industrials_df[industrials_df.ticker == n].iloc:
+        day = (q.date - ind_date).days
+        if q.action == "BUY":
+            ticker_holdings[day] += q.quantity
+        else:
+            ticker_holdings[day] -= q.quantity
+    for i in np.arange(1, indnum_days):
+        ticker_holdings[i] = ticker_holdings[i - 1] + ticker_holdings[i]
+    c = 0
+    for date, price in zip(ind_price_data[n].index, ind_price_data[n]):
+        day = (date - ind_date).days
+        while(c < num_days and c <= day):
+            ticker_holdings[c] *= price
+            c += 1
+    ind_fund_df[n] = ticker_holdings
+
+ind_fund_df.index = pd.date_range(start=ind_date, end=inde_date)
+
+ind_fund_df['Industrials_Fund_Value']=ind_fund_df[list(ind_fund_df.columns)].sum(axis=1)
+
+ind_fund_df['Industrials_Fund_Value'].to_csv("industrials_holdings_data.csv")
+
+ind_fund_df.iloc[-1:,:-1].to_csv("industrials_pie.csv")
+
+#### Healthcare SECTOR #####
+hci_date = np.min(healthcare_df.date) # initial date
+hce_date = dt.now()
+hcnum_days = (hce_date - hci_date).days + 1
+hc_price_data = web.DataReader(healthcare_tickers, "yahoo", hci_date, dt.now())['Close']
+hc_fund_df = pd.DataFrame()
+ 
+for n in healthcare_tickers:
+   ticker_holdings = np.zeros(hcnum_days)
+   for q in healthcare_df[healthcare_df.ticker == n].iloc:
+       day = (q.date - hci_date).days
+       if q.action == "BUY":
+           ticker_holdings[day] += q.quantity
+       else:
+           ticker_holdings[day] -= q.quantity
+   for i in np.arange(1, hcnum_days):
+       ticker_holdings[i] = ticker_holdings[i - 1] + ticker_holdings[i]
+   c = 0
+   for date, price in zip(hc_price_data[n].index, hc_price_data[n]):
+       day = (date - hci_date).days
+       while(c < num_days and c <= day):
+           ticker_holdings[c] *= price
+           c += 1
+   hc_fund_df[n] = ticker_holdings
+ 
+hc_fund_df.index = pd.date_range(start=hci_date, end=hce_date)
+ 
+hc_fund_df['Healthcare_Fund_Value']=hc_fund_df[list(hc_fund_df.columns)].sum(axis=1)
+ 
+hc_fund_df['Healthcare_Fund_Value'].to_csv("healthcare_holdings_data.csv")
+ 
+hc_fund_df.iloc[-1:,:-1].to_csv("healthcare_pie.csv")
+
+
+#### Energy SECTOR #####
+eni_date = np.min(energy_df.date) # initial date
+ene_date = dt.now()
+ennum_days = (ene_date - eni_date).days + 1
+energy_price_data = web.DataReader(energy_tickers, "yahoo", eni_date, dt.now())['Close']
+energy_fund_df = pd.DataFrame()
+
+for n in energy_tickers:
+    ticker_holdings = np.zeros(ennum_days)
+    for q in energy_df[energy_df.ticker == n].iloc:
+        day = (q.date - eni_date).days
+        if q.action == "BUY":
+            ticker_holdings[day] += q.quantity
+        else:
+            ticker_holdings[day] -= q.quantity
+    for i in np.arange(1, ennum_days):
+        ticker_holdings[i] = ticker_holdings[i - 1] + ticker_holdings[i]
+    c = 0
+    for date, price in zip(energy_price_data[n].index, energy_price_data[n]):
+        day = (date - eni_date).days
+        while(c < num_days and c <= day):
+            ticker_holdings[c] *= price
+            c += 1
+    energy_fund_df[n] = ticker_holdings
+
+energy_fund_df.index = pd.date_range(start=eni_date, end=ene_date)
+
+energy_fund_df['Energy_Fund_Value']=energy_fund_df[list(energy_fund_df.columns)].sum(axis=1)
+
+energy_fund_df['Energy_Fund_Value'].to_csv("energy_holdings_data.csv")
+
+energy_fund_df.iloc[-1:,:-1].to_csv("energy_pie.csv")
+
+#### Financial SECTOR #####
+fi_date = np.min(financial_df.date) # initial date
+fe_date = dt.now()
+fnum_days = (fe_date - fi_date).days + 1
+fin_price_data = web.DataReader(financial_tickers, "yahoo", fi_date, dt.now())['Close']
+fin_fund_df = pd.DataFrame()
+ 
+for n in financial_tickers:
+   ticker_holdings = np.zeros(fnum_days)
+   for q in financial_df[financial_df.ticker == n].iloc:
+       day = (q.date - fi_date).days
+       if q.action == "BUY":
+           ticker_holdings[day] += q.quantity
+       else:
+           ticker_holdings[day] -= q.quantity
+   for i in np.arange(1, fnum_days):
+       ticker_holdings[i] = ticker_holdings[i - 1] + ticker_holdings[i]
+   c = 0
+   for date, price in zip(fin_price_data[n].index, fin_price_data[n]):
+       day = (date - fi_date).days
+       while(c < num_days and c <= day):
+           ticker_holdings[c] *= price
+           c += 1
+   fin_fund_df[n] = ticker_holdings
+ 
+fin_fund_df.index = pd.date_range(start=fi_date, end=fe_date)
+ 
+fin_fund_df['Financial_Fund_Value']=fin_fund_df[list(fin_fund_df.columns)].sum(axis=1)
+ 
+fin_fund_df['Financial_Fund_Value'].to_csv("financial_holdings_data.csv")
+ 
+fin_fund_df.iloc[-1:,:-1].to_csv("financial_pie.csv")
+
+#### Consumer SECTOR #####
+cons_idate = np.min(consumer_df.date) # initial date
+cons_edate = dt.now()
+cons_days = (cons_edate - cons_idate).days + 1
+cons_price_data = web.DataReader(consumer_tickers, "yahoo", cons_idate, dt.now())['Close']
+cons_fund_df = pd.DataFrame()
+ 
+for n in consumer_tickers:
+   ticker_holdings = np.zeros(cons_days)
+   for q in consumer_df[consumer_df.ticker == n].iloc:
+       day = (q.date - cons_idate).days
+       if q.action == "BUY":
+           ticker_holdings[day] += q.quantity
+       else:
+           ticker_holdings[day] -= q.quantity
+   for i in np.arange(1, cons_days):
+       ticker_holdings[i] = ticker_holdings[i - 1] + ticker_holdings[i]
+   c = 0
+   for date, price in zip(cons_price_data[n].index, cons_price_data[n]):
+       day = (date - cons_idate).days
+       while(c < num_days and c <= day):
+           ticker_holdings[c] *= price
+           c += 1
+   cons_fund_df[n] = ticker_holdings
+ 
+cons_fund_df.index = pd.date_range(start=cons_idate, end=cons_edate)
+ 
+cons_fund_df['Consumer_Fund_Value']=cons_fund_df[list(cons_fund_df.columns)].sum(axis=1)
+ 
+cons_fund_df['Consumer_Fund_Value'].to_csv("consumer_holdings_data.csv")
+ 
+cons_fund_df.iloc[-1:,:-1].to_csv("consumer_pie.csv")
+
